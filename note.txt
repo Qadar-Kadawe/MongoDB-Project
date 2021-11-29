@@ -1,0 +1,143 @@
+/*
+INSERT ONE AND MANY
+*/
+
+db.collection('users').insertOne({
+    _id: id,
+    name: 'Haawo',
+    age: 53
+}, (error, result) => {
+    if (error) {
+        return console.log("Unable to insert user");
+    }
+    console.log(result.ops);
+})
+
+db.collection('users').insertMany([{
+        name: 'Abdullahi',
+        age: 55
+    },
+
+    {
+        name: 'Mohamed',
+        age: 101
+    }
+], (error, result) => {
+    if (error) {
+        return console.log('Unable to insert to documents!');
+    }
+    return console.log(result.ops);
+})
+
+
+db.collection('tasks').insertMany([{
+    description: 'Frist course with a MongoDB',
+    complete: true
+}, {
+    description: 'MongoDB NoSQL is learning',
+    complete: false
+}, {
+    description: 'Node js Mongodb is a Database',
+    complete: true
+}], (error, result) => {
+    if (error) {
+        return console.log('Unable to insert to Documents!');
+    }
+    console.log(result.ops);
+})
+
+/* FINDONE */
+
+db.collection('users').findOne({ _id: new ObjectID("617d26f581280ddb7421ff08") }, (error, user) => {
+    if (error) {
+        return console.log("Unable to fetch User");
+    }
+    console.log(user)
+})
+
+/* FIND All (like age: 23) for array and  Count  */
+db.collection("users").find({ age: 23 }).toArray((error, user) => {
+    if (error) {
+        console.log('Unabke fetch user object')
+    }
+    console.log(user);
+})
+
+db.collection("users").find({ age: 23 }).count((error, count) => {
+    console.log(count)
+})
+
+// CHALLENGE
+// use find and findOne with task
+
+db.collection("tasks").findOne({ _id: new ObjectID("617e2004c25aa5f3a5cf135f") }, (error, task) => {
+    if (error) {
+        return console.log("Unable to fetch of tasks")
+    }
+    console.log(task)
+})
+
+db.collection("tasks").find({ complete: false }).toArray((error, task) => {
+    console.log(task);
+})
+
+/* UpdateOne */
+
+
+db.collection("users").updateOne({
+    _id: new ObjectID("617d902c013c2be48948e409")
+}, {
+    $inc: {
+        age: -1
+    }
+}).then((result) => {
+    console.log(result);
+}).catch((error) => {
+    console.log(error)
+})
+
+
+/*Challenge UpdateMony */
+db.collection("tasks").updateMany({
+    complete: false
+}, {
+    $set: {
+        complete: true
+    }
+}).then((result) => {
+    console.log(result.modifiedCount);
+}).catch((error) => {
+    console.error(error);
+})
+
+/* DeleteMany */
+db.collection("users").deleteMany({
+    age: 23
+}).then((result) => {
+    console.log(result)
+}).catch((error) => {
+    console.error(error);
+})
+
+/* Mongoose With test-api */
+
+
+const User = mongoose.model('User', {
+    name: {
+        type: String
+    },
+    age: {
+        type: Number
+    }
+})
+
+const mongo = new User({
+    name: "Abdikadar ",
+    age: 23
+})
+
+mongo.save().then((mongo) => {
+    console.log(mongo);
+}).catch((error) => {
+    console.error("Error", error);
+})
